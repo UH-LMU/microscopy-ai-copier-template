@@ -1,0 +1,10 @@
+
+# Global project settings
+project:
+  name: {{ project_name }}
+  slug: {{ project_slug }}
+  pixel_size_um: 0.2     # example default
+  channels:
+    nuclei: 0
+    cyto: 1
+  formats: ["tiff", "tif", "czi"]

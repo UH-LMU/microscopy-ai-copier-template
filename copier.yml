@@ -1,0 +1,59 @@
+
+# Copier template for microscopy AI projects
+# See https://copier.readthedocs.io/
+_min_copier_version: '9.0.0'
+_answers_file: .copier-answers.yml
+_jinja_extensions:
+  - jinja2_time.TimeExtension
+
+project_name:
+  type: str
+  help: Human-friendly project name
+  default: Microscopy AI Project
+
+project_slug:
+  type: str
+  help: Folder/repo name (no spaces)
+  default: microscopy-ai-project
+
+author_name:
+  type: str
+  help: Your name (for README)
+  default: ""
+
+use_dvc:
+  type: bool
+  help: Use DVC for large files & models?
+  default: true
+
+include_slurm:
+  type: bool
+  help: Include Slurm job scripts (Puhti)?
+  default: true
+
+storage_backend:
+  type: str
+  help: Default storage backend (local or s3)
+  choices:
+    - local
+    - s3
+  default: local
+
+allas_bucket:
+  type: str
+  help: Allas S3 bucket name (if storage_backend=s3)
+  default: your-allas-bucket
+
+allas_endpoint:
+  type: str
+  help: Allas S3 endpoint URL (e.g. https://a3s.fi)
+  default: https://a3s.fi
+
+cuda_default:
+  type: str
+  help: Default accelerator (cpu or cuda)
+  choices:
+    - cpu
+    - cuda
+  default: cpu
+

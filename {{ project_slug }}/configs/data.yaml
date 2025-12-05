@@ -1,0 +1,19 @@
+
+# Data sources & cache
+storage:
+  backend: {{ 's3' if storage_backend == 's3' else 'local' }}
+  local_root: "file://data/local/images"
+  s3:
+    endpoint: "{{ allas_endpoint }}"
+    bucket: "{{ allas_bucket }}"
+    root: "{{ project_slug }}/"
+cache:
+  local_cache: "data/local"
+lookup:
+  # the napari-plate-navigator should resolve roots from here using PLATE_PROJECT_ROOT
+  images_key: images
+  labels_key: labels
+paths:
+  images: "data/local/images"
+  labels: "annotations/labels"
+  splits: "data/splits/v1"

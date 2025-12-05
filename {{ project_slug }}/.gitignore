@@ -1,0 +1,29 @@
+
+# Python
+__pycache__/
+*.pyc
+
+# Environments & caches
+.pixi/
+.pixi-envs/
+.venv/
+.cache/
+
+# DVC
+.dvc/cache/
+*.dvc
+!.gitignore
+
+# Data & models (tracked via DVC)
+data/local/
+annotations/labels/
+models/
+outputs/runs/
+outputs/reports/
+
+# Jupyter
+*.ipynb_checkpoints
+
+# OS
+.DS_Store
+Thumbs.db

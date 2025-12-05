@@ -1,0 +1,122 @@
+
+[project]
+name = "{{ project_slug }}"
+
+[tool.pixi.project]
+channels = ["conda-forge"]
+platforms = ["win-64", "linux-64"]
+
+# ---------------- Common tasks (usable from any env) ----------------
+[tool.pixi.tasks]
+check = "python -c "print('pixi ok')""
+
+# DVC helpers
+"dvc:init" = "python -m pip show dvc || true && dvc remote add -d allas s3://${S3_BUCKET}/${PIXI_PROJECT_NAME} && dvc remote modify allas endpointurl ${S3_ENDPOINT} || true"
+"dvc:pull" = "dvc pull -v"
+"dvc:push" = "dvc push -v"
+
+# Iteration loop (tool selected by environment)
+# Use -e <env> to pick which tool runs
+"test" = "python scripts/test_model.py --config configs/project.yaml --split data/splits/v1/test.csv"
+"evaluate" = "python scripts/evaluate.py --runs outputs/runs"
+
+# Training variants
+"train:cp3" = "python scripts/train_cellpose.py --config configs/train.cellpose3.yaml --tool cellpose3"
+"train:cp4" = "python scripts/train_cellpose.py --config configs/train.cellpose4.yaml --tool cellpose4"
+"train:microsam" = "python scripts/train_microsam.py --config configs/train.microsam.yaml"
+
+# Napari launchers with PLATE_PROJECT_ROOT
+browse = [
+  { cmd = "env", env = { PLATE_PROJECT_ROOT = "." }},
+  { cmd = "python -m napari" }
+]
+"browse-test" = [
+  { cmd = "env", env = { PLATE_PROJECT_ROOT = "." }},
+  { cmd = "python -m napari" }
+]
+
+# Pretrained fetchers
+"fetch:sam-vitb" = "python scripts/fetch_pretrained.py --model sam_vit_b --dest models/pretrained"
+"fetch:cp-cyto3" = "python scripts/fetch_pretrained.py --model cellpose_cyto3 --dest models/pretrained"
+
+# ---------------- Feature layers ----------------
+# CUDA feature adds GPU builds when available
+[tool.pixi.feature.cuda.dependencies]
+pytorch = "*"
+
+# ---------------- Base shared dependencies (thin) ----------------
+[tool.pixi.dependencies]
+python = "3.11.*"
+pandas = "*"
+numpy = "*"
+scipy = "*"
+scikit-image = "*"
+pyyaml = "*"
+rich = "*"
+
+# ---------------- Environments ----------------
+# Cellpose 3 (CPU)
+[tool.pixi.environments.cellpose3-cpu]
+dependencies = [
+  "python=3.10.*",
+  "pytorch",  # cpu build
+  "pip",
+  "napari",
+  "dvc",
+]
+pypi-dependencies = { cellpose = "<4.0" }
+
+# Cellpose 3 (CUDA)
+[tool.pixi.environments.cellpose3-cuda]
+features = ["cuda"]
+dependencies = [
+  "python=3.10.*",
+  "pip",
+  "napari",
+  "dvc",
+]
+pypi-dependencies = { cellpose = "<4.0" }
+
+# Cellpose 4 + SAM (CPU)
+[tool.pixi.environments.cellpose4-cpu]
+dependencies = [
+  "python=3.11.*",
+  "pytorch",  # cpu
+  "pip",
+  "napari",
+  "dvc",
+]
+pypi-dependencies = { cellpose = ">=4.0" }
+
+# Cellpose 4 + SAM (CUDA)
+[tool.pixi.environments.cellpose4-cuda]
+features = ["cuda"]
+dependencies = [
+  "python=3.11.*",
+  "pip",
+  "napari",
+  "dvc",
+]
+pypi-dependencies = { cellpose = ">=4.0" }
+
+# micro-SAM (CPU)
+[tool.pixi.environments.microsam-cpu]
+dependencies = [
+  "python=3.11.*",
+  "pytorch",  # cpu
+  "pip",
+  "napari",
+  "dvc",
+]
+pypi-dependencies = { "micro-sam" = "*" }
+
+# micro-SAM (CUDA)
+[tool.pixi.environments.microsam-cuda]
+features = ["cuda"]
+dependencies = [
+  "python=3.11.*",
+  "pip",
+  "napari",
+  "dvc",
+]
+pypi-dependencies = { "micro-sam" = "*" }

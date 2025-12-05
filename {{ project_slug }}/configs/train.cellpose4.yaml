@@ -1,0 +1,12 @@
+
+data:
+  images_dir: "data/local/images/train"
+  labels_dir: "annotations/labels/train"
+  diameter: 0  # auto
+model:
+  pretrained: "cyto3"  # or nuclei, cpsam, etc.
+train:
+  epochs: 150
+  lr: 0.2
+  batch_size: 8
+  augment: true

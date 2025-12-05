@@ -1,0 +1,11 @@
+
+stages:
+  test:
+    cmd: python scripts/test_model.py --config configs/project.yaml --split data/splits/v1/test.csv
+    deps:
+      - scripts/test_model.py
+      - configs/project.yaml
+      - data/splits/v1/test.csv
+    metrics:
+      - dvclive/metrics.json:
+          cache: false
